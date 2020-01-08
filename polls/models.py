@@ -26,3 +26,13 @@ class Choice(models.Model):
 
     def __str__(self):
         return self.choice_text
+
+
+class Vote(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    choice = models.ForeignKey(Choice, on_delete=models.CASCADE)
+    voter_signature = models.CharField(max_length=30)
+    vote_date = models.DateTimeField('date voted')
+
+    def __str__(self):
+        return self.voter_signature
