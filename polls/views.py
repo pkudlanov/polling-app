@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
 
-from .models import Choice, Question
+from .models import Choice, Question, Vote
 
 
 class IndexView(generic.ListView):
@@ -36,18 +36,15 @@ def vote(request, question_id):
     try:
         selected_choice = question.choice_set.get(pk=request.POST['choice'])
         signature = request.POST['signature']
-        date = request.POST['date']
-        print("###", signature, "This is the signature.", "###")
-        print(date)
+        vote_date = request.POST['date']
     except (KeyError, Choice.DoesNotExist):
         return render(request, 'polls/detail.html', {
             'question': question,
             'error_message': "You didn't select a choice.",
         })
     else:
+        vote = Vote.create(question, selected_choice, signature, vote_date)
+        vote.save()
         selected_choice.votes += 1
         selected_choice.save()
-        return HttpResponseRedirect(reverse(
-            'polls:results',
-            args=(question.id,)
-        ))
+        return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
