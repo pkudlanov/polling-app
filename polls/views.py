@@ -4,6 +4,8 @@ from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
 
+import json
+
 from .models import Choice, Question, Vote
 
 
@@ -35,15 +37,14 @@ def vote(request, question_id):
 
     try:
         selected_choice = question.choice_set.get(pk=request.POST['choice'])
-        signature = request.POST['signature']
-        vote_date = request.POST['date']
+        data = request.POST
     except (KeyError, Choice.DoesNotExist):
         return render(request, 'polls/detail.html', {
             'question': question,
             'error_message': "You didn't select a choice.",
         })
     else:
-        vote = Vote.create(question, selected_choice, signature, vote_date)
+        vote = Vote.create(question, selected_choice, data['signature'], data['date'])
         vote.save()
         selected_choice.votes += 1
         selected_choice.save()
