@@ -1,2 +1,3 @@
 [flake8]
-exclude = polls/migrations/*.py
+exclude = .git,*migrations*
+max-line-length = 119
