@@ -32,7 +32,12 @@ class Vote(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     choice = models.ForeignKey(Choice, on_delete=models.CASCADE)
     voter_signature = models.CharField(max_length=30)
-    vote_date = models.DateTimeField('date voted')
+    vote_date = models.DateField('date voted')
 
     def __str__(self):
         return self.voter_signature
+
+    @classmethod
+    def create(cls, question, choice, voter_signature, vote_date):
+        vote = cls(question=question, choice=choice, voter_signature=voter_signature, vote_date=vote_date)
+        return vote
