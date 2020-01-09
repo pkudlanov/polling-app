@@ -1,40 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+{% extends 'base.html' %}
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+{% load static %}
 
-    <!-- Fengyuan Chen's Datepicker -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
-</head>
-<body>
-    <h1>{{ question.question_text }}</h1>
-    
-    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-    
-    <form action="{% url 'polls:vote' question.id %}" method="post">
+{% block title %}{{ question.question_text}}{% endblock title %}
+
+
+{% block scripts %}
+<script>
+    $('[data-toggle="datepicker"]').datepicker({
+        format: 'yyyy-mm-dd',
+        date: new Date()
+    });
+</script>
+{% endblock scripts %}
+
+
+{% block content %}
+<h1>{{ question.question_text }}</h1>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url 'polls:vote' question.id %}" method="post">
     {% csrf_token %}
     {% for choice in question.choice_set.all %}
-        <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
-        <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
+    <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
+    <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
     {% endfor %}
-    
-    <input data-toggle="datepicker" name="date" placeholder="Pick a date">
-    <label for="date">Date</label><br>
-    
-    <input type="text" name="signature">
-    <label for="signature">Digital Signature</label><br>
-    
-    <input type="submit" value="Vote">
-    </form>
 
-    <script>
-        $('[data-toggle="datepicker"]').datepicker();
-    </script>
-</body>
-</html>
+    <input data-toggle="datepicker" name="date" placeholder="Pick a date" required>
+    <label for="date">Date</label><br>
+
+    <input type="text" name="signature" placeholder="First and Lastname" required>
+    <label for="signature">Digital Signature</label><br>
+
+    <input type="submit" value="Vote">
+</form>
+{% endblock content %}
